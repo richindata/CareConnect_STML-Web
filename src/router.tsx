@@ -1,36 +1,43 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { Navigate, createBrowserRouter } from 'react-router-dom'
 import type { RouteObject } from 'react-router-dom'
-import { RootLayout } from './components/RootLayout'
+import { AppLayout } from './components/AppLayout'
+import { RequireAuth } from './components/RequireAuth'
 import { ErrorPage } from './pages/ErrorPage'
-import { TodayPage } from './pages/TodayPage'
-import { RemindersPage } from './pages/RemindersPage'
-import { RoutinePage } from './pages/RoutinePage'
-import { PeoplePage } from './pages/PeoplePage'
-import { NotesPage } from './pages/NotesPage'
-import { SettingsPage } from './pages/SettingsPage'
-import { NotFoundPage } from './pages/NotFoundPage'
+import { SignInPage } from './pages/SignInPage'
+import { CreateAccountPage } from './pages/CreateAccountPage'
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
+import { DashboardPage } from './pages/DashboardPage'
+import { SectionPlaceholderPage } from './pages/SectionPlaceholderPage'
 
 /**
- * A single root route renders the shell; every page is a child, so the header,
- * navigation, and <main> persist across navigations. The catch-all keeps
- * unknown URLs inside the app instead of showing a bare server 404 — the
- * service worker's navigateFallback serves index.html for any deep link.
+ * Signed-out screens render their own centred card. Everything behind
+ * RequireAuth shares the masthead shell, and redirects to sign-in when there
+ * is no session.
  */
 export const routes: RouteObject[] = [
+  { path: '/', element: <SignInPage />, errorElement: <ErrorPage /> },
+  { path: '/create-account', element: <CreateAccountPage />, errorElement: <ErrorPage /> },
+  { path: '/forgot-password', element: <ForgotPasswordPage />, errorElement: <ErrorPage /> },
+
   {
-    path: '/',
-    element: <RootLayout />,
+    element: <RequireAuth />,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <TodayPage /> },
-      { path: 'reminders', element: <RemindersPage /> },
-      { path: 'routine', element: <RoutinePage /> },
-      { path: 'people', element: <PeoplePage /> },
-      { path: 'notes', element: <NotesPage /> },
-      { path: 'settings', element: <SettingsPage /> },
-      { path: '*', element: <NotFoundPage /> },
+      {
+        element: <AppLayout />,
+        children: [
+          { path: '/dashboard', element: <DashboardPage /> },
+          { path: '/my-day', element: <SectionPlaceholderPage /> },
+          { path: '/meds', element: <SectionPlaceholderPage /> },
+          { path: '/mail', element: <SectionPlaceholderPage /> },
+          { path: '/ai', element: <SectionPlaceholderPage /> },
+          { path: '/settings', element: <SectionPlaceholderPage /> },
+        ],
+      },
     ],
   },
+
+  { path: '*', element: <Navigate to="/" replace /> },
 ]
 
 export const router = createBrowserRouter(routes)

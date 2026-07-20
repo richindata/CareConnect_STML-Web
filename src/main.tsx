@@ -4,20 +4,17 @@ import { RouterProvider } from 'react-router-dom'
 import './index.css'
 import { router } from './router'
 import { AnnouncerProvider } from './context/AnnouncerProvider'
-import { PreferencesProvider } from './context/PreferencesProvider'
-import { AppDataProvider } from './context/AppDataProvider'
+import { AuthProvider } from './context/AuthProvider'
 
 const container = document.getElementById('root')
 if (!container) throw new Error('Root element #root was not found in index.html')
 
 createRoot(container).render(
   <StrictMode>
-    <PreferencesProvider>
-      <AnnouncerProvider>
-        <AppDataProvider>
-          <RouterProvider router={router} />
-        </AppDataProvider>
-      </AnnouncerProvider>
-    </PreferencesProvider>
+    <AnnouncerProvider>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </AnnouncerProvider>
   </StrictMode>,
 )

@@ -3,8 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { routes } from '../router'
 import { AnnouncerProvider } from '../context/AnnouncerProvider'
-import { AppDataProvider } from '../context/AppDataProvider'
-import { PreferencesProvider } from '../context/PreferencesProvider'
+import { AuthProvider } from '../context/AuthProvider'
 
 /** Boots the real app (real routes, real providers) at a given URL. */
 export function renderApp(initialPath = '/') {
@@ -12,13 +11,11 @@ export function renderApp(initialPath = '/') {
   const user = userEvent.setup()
 
   const result = render(
-    <PreferencesProvider>
-      <AnnouncerProvider>
-        <AppDataProvider>
-          <RouterProvider router={router} />
-        </AppDataProvider>
-      </AnnouncerProvider>
-    </PreferencesProvider>,
+    <AnnouncerProvider>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </AnnouncerProvider>,
   )
 
   return { ...result, user, router }

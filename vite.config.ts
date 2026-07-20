@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  // Opens the default browser on the sign-in page when the dev server starts.
+  server: { open: '/' },
+  preview: { open: '/' },
   plugins: [
     react(),
     VitePWA({
@@ -27,11 +30,6 @@ export default defineConfig({
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
           { src: 'icons/maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
-        ],
-        shortcuts: [
-          { name: "Today's plan", url: '/', description: 'See what is happening right now' },
-          { name: 'Reminders', url: '/reminders', description: 'Check and tick off reminders' },
-          { name: 'People', url: '/people', description: 'Call someone you trust' },
         ],
       },
       workbox: {

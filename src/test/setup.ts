@@ -1,6 +1,13 @@
 import '@testing-library/jest-dom/vitest'
+import { webcrypto } from 'node:crypto'
 import { afterEach, vi } from 'vitest'
 import { cleanup } from '@testing-library/react'
+
+// jsdom ships crypto.getRandomValues but not crypto.subtle, which the account
+// store needs for PBKDF2. Node's implementation is the real thing.
+if (!globalThis.crypto?.subtle) {
+  Object.defineProperty(globalThis, 'crypto', { value: webcrypto, configurable: true })
+}
 
 afterEach(() => {
   cleanup()
