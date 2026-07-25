@@ -13,6 +13,8 @@ interface AuthValue {
   user: SessionUser | null
   signIn: (email: string, password: string) => Promise<SignInResult>
   signOut: () => void
+  /** Updates the signed-in profile (name / who they care for). */
+  updateProfile: (patch: Partial<Pick<SessionUser, 'fullName' | 'caringFor'>>) => void
 }
 
 const AuthContext = createContext<AuthValue | null>(null)
@@ -34,7 +36,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }, [])
 
-  const value = useMemo<AuthValue>(() => ({ user, signIn, signOut }), [user, signIn, signOut])
+  const updateProfile = useCallback(
+    (patch: Partial<Pick<SessionUser, 'fullName' | 'caringFor'>>) => {
+      setUser((current) => {
+        if (!current) return current
+        const next = { ...current, ...patch }
+        writeSession(next)
+        return next
+      })
+    },
+    [],
+  )
+
+  const value = useMemo<AuthValue>(
+    () => ({ user, signIn, signOut, updateProfile }),
+    [user, signIn, signOut, updateProfile],
+  )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

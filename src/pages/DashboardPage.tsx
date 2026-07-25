@@ -79,7 +79,7 @@ export function DashboardPage() {
           <section className="panel" aria-labelledby="team-heading">
             <div className="panel__header">
               <h2 id="team-heading">Care Team</h2>
-              <Link className="panel__action" to="/settings">
+              <Link className="panel__action" to="/care-team">
                 Manage
               </Link>
             </div>

@@ -1,26 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { PwaStatus } from './PwaStatus'
-import { useAuth } from '../context/AuthProvider'
-import { initialsOf } from '../lib/dashboardData'
-
-export const appNavItems = [
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/my-day', label: 'My Day' },
-  { to: '/meds', label: 'Meds' },
-  { to: '/mail', label: 'Mail' },
-  { to: '/ai', label: 'AI' },
-  { to: '/settings', label: 'Settings' },
-]
+import { PrimaryNav } from './PrimaryNav'
+import { AccountMenu } from './AccountMenu'
 
 /** The signed-in shell: masthead, primary navigation, account menu, <main>. */
 export function AppLayout() {
-  const { user, signOut } = useAuth()
-  const navigate = useNavigate()
   const location = useLocation()
   const mainRef = useRef<HTMLElement>(null)
   const isFirstRender = useRef(true)
-  const [menuOpen, setMenuOpen] = useState(false)
 
   // Client-side navigation does not move focus the way a real page load does,
   // which strands keyboard and screen-reader users on the previous page.
@@ -31,13 +19,7 @@ export function AppLayout() {
     }
     mainRef.current?.focus()
     window.scrollTo({ top: 0 })
-    setMenuOpen(false)
   }, [location.pathname])
-
-  const handleSignOut = () => {
-    signOut()
-    navigate('/', { replace: true })
-  }
 
   return (
     <div className="app">
@@ -64,43 +46,9 @@ export function AppLayout() {
             CareConnect
           </NavLink>
 
-          <nav className="masthead__nav" aria-label="Primary">
-            <ul className="masthead__list">
-              {appNavItems.map((item) => (
-                <li key={item.to}>
-                  <NavLink className="masthead__link" to={item.to}>
-                    {item.label}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <PrimaryNav />
 
-          <div className="account">
-            <button
-              type="button"
-              className="account__trigger"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              <span className="account__avatar" aria-hidden="true">
-                {initialsOf(user?.fullName ?? '?')}
-              </span>
-              <span className="account__text">
-                <span className="account__name">{user?.fullName ?? 'Account'}</span>
-                <span className="account__role">Primary</span>
-              </span>
-            </button>
-
-            {menuOpen ? (
-              <div className="account__menu">
-                <p className="account__email">{user?.email}</p>
-                <button type="button" className="button button--secondary" onClick={handleSignOut}>
-                  Sign out
-                </button>
-              </div>
-            ) : null}
-          </div>
+          <AccountMenu />
         </div>
       </header>
 

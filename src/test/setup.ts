@@ -29,13 +29,45 @@ if (!HTMLDialogElement.prototype.showModal) {
 // The route-change effect scrolls to the top; jsdom has no layout to scroll.
 window.scrollTo = vi.fn() as unknown as typeof window.scrollTo
 
-if (!window.matchMedia) {
-  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
-    matches: false,
+// jsdom has no layout engine, so matchMedia is faked against a settable viewport
+// width. Tests default to desktop; `setViewportWidth(375)` exercises mobile.
+let viewportWidth = 1440
+const mediaListeners = new Set<() => void>()
+
+function evaluate(query: string): boolean {
+  const min = /min-width:\s*(\d+)px/.exec(query)
+  if (min) return viewportWidth >= Number(min[1])
+  const max = /max-width:\s*(\d+)px/.exec(query)
+  if (max) return viewportWidth <= Number(max[1])
+  return false
+}
+
+export function setViewportWidth(width: number): void {
+  viewportWidth = width
+  mediaListeners.forEach((notify) => notify())
+}
+
+window.matchMedia = vi.fn().mockImplementation((query: string) => {
+  const list: Partial<MediaQueryList> & { matches: boolean } = {
+    matches: evaluate(query),
     media: query,
     onchange: null,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  }))
-}
+    dispatchEvent: () => true,
+  }
+  const handlers = new Set<(event: MediaQueryListEvent) => void>()
+  const notify = () => {
+    list.matches = evaluate(query)
+    handlers.forEach((handler) => handler({ matches: list.matches } as MediaQueryListEvent))
+  }
+  list.addEventListener = (_type: string, handler: EventListenerOrEventListenerObject) => {
+    handlers.add(handler as (event: MediaQueryListEvent) => void)
+    mediaListeners.add(notify)
+  }
+  list.removeEventListener = (_type: string, handler: EventListenerOrEventListenerObject) => {
+    handlers.delete(handler as (event: MediaQueryListEvent) => void)
+    if (handlers.size === 0) mediaListeners.delete(notify)
+  }
+  return list as MediaQueryList
+})
+
+afterEach(() => setViewportWidth(1440))

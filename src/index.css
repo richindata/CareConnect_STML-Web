@@ -519,12 +519,17 @@ input[type='text'] {
 
 .masthead__inner {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem 1.25rem;
+  gap: 0.5rem;
   max-width: 72rem;
   margin-inline: auto;
   padding: 0.7rem clamp(1rem, 4vw, 2rem);
+}
+
+@media (min-width: 768px) {
+  .masthead__inner {
+    gap: 1.25rem;
+  }
 }
 
 .masthead__brand {
@@ -554,12 +559,48 @@ input[type='text'] {
   }
 }
 
-.masthead__nav {
-  flex: 1 1 auto;
-  overflow-x: auto;
+/* Primary navigation --------------------------------------------------------
+   Mobile-first: the nav is a hamburger toggle whose list drops down as a
+   full-width panel. From tablet up (>= 768px) it becomes a horizontal row.
+   ------------------------------------------------------------------------- */
+
+.primary-nav {
+  margin-inline-start: auto;
 }
 
-.masthead__list {
+.primary-nav__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: var(--tap);
+  min-width: var(--tap);
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary-nav__toggle:hover {
+  background: var(--page-bg);
+}
+
+.primary-nav__bars {
+  display: grid;
+  gap: 3px;
+  width: 18px;
+}
+
+.primary-nav__bars span {
+  display: block;
+  height: 2px;
+  background: currentcolor;
+  border-radius: 2px;
+}
+
+.primary-nav__list {
   display: flex;
   gap: 0.15rem;
   padding: 0;
@@ -567,11 +608,26 @@ input[type='text'] {
   list-style: none;
 }
 
-.masthead__link {
-  display: inline-flex;
+/* The dropdown panel shown on mobile. It anchors to the sticky masthead, so it
+   spans the full bar width regardless of where the toggle sits. */
+.primary-nav__list--panel {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 100%;
+  z-index: 25;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem clamp(1rem, 4vw, 2rem) 0.75rem;
+  background: var(--surface);
+  border-block-end: 1px solid var(--line);
+  box-shadow: 0 14px 28px rgb(16 20 40 / 12%);
+}
+
+.primary-nav__link {
+  display: flex;
   align-items: center;
   min-height: var(--tap);
-  padding: 0.4rem 0.9rem;
+  padding: 0.5rem 0.9rem;
   border-radius: 10px;
   color: var(--ink-muted);
   font-weight: 600;
@@ -579,14 +635,21 @@ input[type='text'] {
   white-space: nowrap;
 }
 
-.masthead__link:hover {
+.primary-nav__link:hover {
   background: var(--page-bg);
   color: var(--ink);
 }
 
-.masthead__link[aria-current='page'] {
+.primary-nav__link[aria-current='page'] {
   background: var(--brand-soft);
   color: var(--brand);
+}
+
+@media (min-width: 768px) {
+  .primary-nav {
+    flex: 1 1 auto;
+    margin-inline: 0.5rem;
+  }
 }
 
 .account {
@@ -598,6 +661,7 @@ input[type='text'] {
   align-items: center;
   gap: 0.55rem;
   min-height: var(--tap);
+  min-width: var(--tap);
   padding: 0.25rem 0.5rem;
   background: transparent;
   border: 1px solid transparent;
@@ -621,11 +685,19 @@ input[type='text'] {
   font-weight: 700;
 }
 
+/* On mobile the avatar alone stands in for the account; the name returns from
+   tablet up where there is room. */
 .account__text {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: flex-start;
   line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .account__text {
+    display: flex;
+  }
 }
 
 .account__name {
@@ -946,4 +1018,2023 @@ input[type='text'] {
   margin-block-start: 0.15rem;
   color: var(--ink-muted);
   font-size: 0.82rem;
+}
+
+/* ==========================================================================
+   Buttons inside the signed-in app + dialogs
+   ========================================================================== */
+
+.app {
+  --brand-ink: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .app {
+    --brand-ink: #10131f;
+  }
+}
+
+.app .button,
+.dialog .button {
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+
+.app .button:hover,
+.dialog .button:hover {
+  filter: brightness(0.94);
+}
+
+.button--secondary {
+  background: transparent;
+  border-color: var(--line, #d7d5e6);
+  color: inherit;
+}
+
+.app .button--secondary,
+.dialog .button--secondary {
+  background: transparent;
+  color: inherit;
+}
+
+.button--ghost {
+  min-height: var(--tap);
+  padding: 0.4rem 0.75rem;
+  background: transparent;
+  border-color: transparent;
+  color: var(--brand);
+}
+
+.button--ghost:hover {
+  text-decoration: underline;
+  filter: none;
+}
+
+.app .button--ghost {
+  background: transparent;
+  color: var(--brand);
+}
+
+.button--danger-text {
+  min-height: var(--tap);
+  padding: 0.4rem 0.75rem;
+  background: transparent;
+  border-color: transparent;
+  color: #c0392b;
+}
+
+.app .button--danger-text {
+  background: transparent;
+  color: #ff8a80;
+}
+
+@media (prefers-color-scheme: light) {
+  .app .button--danger-text {
+    color: #c0392b;
+  }
+}
+
+.button--danger-text:hover {
+  text-decoration: underline;
+  filter: none;
+}
+
+.req {
+  color: var(--brand);
+}
+
+/* ==========================================================================
+   Dialog
+   ========================================================================== */
+
+.dialog {
+  width: min(30rem, calc(100vw - 2rem));
+  padding: 0;
+  border: 1px solid var(--line, #e6e5f0);
+  border-radius: 16px;
+  background: var(--surface, #fff);
+  color: var(--ink, #16202e);
+  box-shadow: 0 20px 50px rgb(16 20 40 / 25%);
+}
+
+.dialog::backdrop {
+  background: rgb(12 18 30 / 55%);
+}
+
+.dialog__inner {
+  padding: clamp(1.1rem, 4vw, 1.6rem);
+}
+
+.dialog__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-block-end: 1.1rem;
+}
+
+.dialog__header h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.dialog__close {
+  display: grid;
+  place-items: center;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.dialog__close:hover {
+  background: var(--page-bg, #f1f0f7);
+}
+
+.dialog select {
+  min-height: var(--tap);
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  background: var(--surface, #fff);
+  color: inherit;
+  border: 1px solid var(--line, #cdccdd);
+  border-radius: var(--radius);
+}
+
+.dialog input[aria-invalid='true'],
+.dialog select[aria-invalid='true'] {
+  border-color: var(--danger);
+  border-width: 2px;
+}
+
+.dialog__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-block-start: 1.25rem;
+}
+
+.dialog__footer .button {
+  flex: 1 1 auto;
+}
+
+@media (min-width: 480px) {
+  .dialog__footer .button {
+    flex: 0 0 auto;
+  }
+}
+
+/* ==========================================================================
+   Care Team page
+   ========================================================================== */
+
+.breadcrumb {
+  margin-block-end: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  color: var(--ink-muted);
+}
+
+.breadcrumb li + li::before {
+  content: '›';
+  margin-inline-end: 0.4rem;
+  color: var(--ink-muted);
+}
+
+.breadcrumb a {
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+.breadcrumb [aria-current='page'] {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.page-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-block-end: 1.5rem;
+}
+
+.page-heading h1 {
+  font-size: clamp(1.5rem, 1.2rem + 1.6vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.page-heading .button {
+  min-height: var(--tap);
+}
+
+/* Member grid: 1 col mobile, 2 col tablet, 3 col desktop via intrinsic sizing. */
+.member-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  padding: 0;
+  margin: 0 0 1.5rem;
+  list-style: none;
+}
+
+.member {
+  height: 100%;
+  padding: 1.15rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.member__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-block-end: 0.9rem;
+}
+
+.member__avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.member__avatar--primary {
+  background: #6350d6;
+}
+
+.member__avatar--nurse {
+  background: #3d8fd6;
+}
+
+.member__avatar--family {
+  background: #23b6c9;
+}
+
+.member__avatar--aide {
+  background: #e8933a;
+}
+
+.member__avatar--clinician {
+  background: #7a6ff0;
+}
+
+.member__name {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.badge {
+  display: inline-block;
+  margin-block-start: 0.25rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--badge-color, var(--brand));
+  background: color-mix(in srgb, var(--badge-color, var(--brand)) 16%, var(--surface));
+}
+
+.badge--primary {
+  --badge-color: #6350d6;
+}
+
+.badge--nurse {
+  --badge-color: #2f77b8;
+}
+
+.badge--family {
+  --badge-color: #0f97a8;
+}
+
+.badge--aide {
+  --badge-color: #c26a12;
+}
+
+.badge--clinician {
+  --badge-color: #7a6ff0;
+}
+
+.member__contact {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0 0 0.9rem;
+}
+
+.member__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 1.75rem;
+}
+
+.member__row dt {
+  flex: none;
+}
+
+.member__row dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.member__row a {
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+.member__row a:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+.member__status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-block-start: 0.8rem;
+  border-block-start: 1px solid var(--line);
+  font-size: 0.85rem;
+}
+
+.member__dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  flex: none;
+}
+
+.member__dot--active {
+  background: #2aa568;
+}
+
+.member__dot--offline {
+  background: #9aa3b2;
+}
+
+.member__status-note {
+  margin-inline-start: auto;
+  color: var(--ink-muted);
+}
+
+/* Pending invitations ----------------------------------------------------- */
+
+.invites__list {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.invites__empty {
+  color: var(--ink-muted);
+}
+
+.invite {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.invite__who {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.invite__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.1rem;
+  height: 2.1rem;
+  background: var(--page-bg);
+  border-radius: 8px;
+}
+
+.invite__email {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.invite__meta {
+  color: #c26a12;
+  font-size: 0.85rem;
+}
+
+.invite__sent {
+  color: var(--ink-muted);
+}
+
+.invite__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  margin-inline-start: auto;
+}
+
+@media (max-width: 32rem) {
+  .invite__actions {
+    width: 100%;
+    margin-inline-start: 0;
+    justify-content: flex-start;
+  }
+}
+
+/* ==========================================================================
+   My Day page
+   ========================================================================== */
+
+.dialog input[type='time'],
+.dialog input[type='text'] {
+  min-height: var(--tap);
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  background: var(--surface, #fff);
+  color: inherit;
+  border: 1px solid var(--line, #cdccdd);
+  border-radius: var(--radius);
+}
+
+/* Week strip: scrolls on mobile, spreads evenly from tablet up. */
+.week {
+  display: flex;
+  gap: 0.35rem;
+  margin-block-end: 1.25rem;
+  padding: 0.5rem;
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  scrollbar-width: thin;
+}
+
+.week__day {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 3rem;
+  min-height: var(--tap);
+  padding: 0.5rem 0.4rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
+.week__day:hover {
+  background: var(--page-bg);
+}
+
+.week__day.is-selected {
+  background: var(--brand-soft);
+  border-color: color-mix(in srgb, var(--brand) 40%, transparent);
+  color: var(--brand);
+}
+
+.week__day.is-today .week__num {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.week__name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.week__num {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+@media (min-width: 768px) {
+  .week__day {
+    flex: 1 1 0;
+  }
+}
+
+/* Task list --------------------------------------------------------------- */
+
+.day-list__summary {
+  margin-block-end: 0.9rem;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+}
+
+.day-list__empty {
+  padding: 2rem 1rem;
+  border: 2px dashed var(--line);
+  border-radius: 12px;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.task-list {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.task-row {
+  display: grid;
+  grid-template-columns: 3.5rem auto 1fr;
+  grid-template-areas:
+    'time check body'
+    'time check pill';
+  align-items: center;
+  column-gap: 0.75rem;
+  row-gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-inline-start: 4px solid var(--line);
+  border-radius: 12px;
+}
+
+.task-row.is-pending {
+  border-inline-start-color: var(--brand);
+}
+
+.task-row.is-done {
+  background: color-mix(in srgb, #2aa568 8%, var(--surface));
+  border-inline-start-color: #2aa568;
+}
+
+.task-row__time {
+  grid-area: time;
+  color: var(--ink-muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.task-row__check {
+  grid-area: check;
+  width: 1.5rem;
+  height: 1.5rem;
+  accent-color: #2aa568;
+  cursor: pointer;
+}
+
+.task-row__body {
+  grid-area: body;
+  min-width: 0;
+}
+
+.task-row__title {
+  display: block;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.task-row.is-done .task-row__title {
+  color: var(--ink-muted);
+  text-decoration: line-through;
+}
+
+.task-row__assignee {
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
+.status-pill {
+  grid-area: pill;
+  justify-self: start;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--pill-color);
+  background: color-mix(in srgb, var(--pill-color) 16%, var(--surface));
+}
+
+.status-pill--done {
+  --pill-color: #1c7a4b;
+}
+
+.status-pill--pending {
+  --pill-color: #c26a12;
+}
+
+/* From ~560px the row fits on a single line with the pill on the right. */
+@media (min-width: 35rem) {
+  .task-row {
+    grid-template-columns: 4rem auto 1fr auto;
+    grid-template-areas: 'time check body pill';
+  }
+
+  .status-pill {
+    justify-self: end;
+  }
+}
+
+/* ==========================================================================
+   Medications page
+   ========================================================================== */
+
+/* Solid destructive button (confirmation dialogs). */
+.button--danger {
+  background: transparent;
+  border-color: #c0392b;
+  color: #c0392b;
+}
+
+.app .button--danger,
+.dialog .button--danger {
+  background: transparent;
+  border-color: #c0392b;
+  color: #c0392b;
+}
+
+.dialog .button--danger:hover {
+  background: color-mix(in srgb, #c0392b 12%, transparent);
+  filter: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .app .button--danger,
+  .dialog .button--danger {
+    border-color: #ff8a80;
+    color: #ff8a80;
+  }
+}
+
+.meds-next {
+  margin-block: 0 1.5rem;
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+}
+
+.med-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.med {
+  height: 100%;
+  padding: 1.15rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-inline-start: 4px solid var(--brand);
+  border-radius: 14px;
+}
+
+.med.is-complete {
+  border-inline-start-color: #2aa568;
+  background: color-mix(in srgb, #2aa568 6%, var(--surface));
+}
+
+.med__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+
+.med__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--brand-soft);
+  border-radius: 10px;
+  font-size: 1.2rem;
+}
+
+.med__title {
+  flex: 1;
+  min-width: 0;
+}
+
+.med__name {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.med__dosage {
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
+.med__remove {
+  flex: none;
+  min-width: var(--tap);
+  min-height: var(--tap);
+}
+
+.med__instructions {
+  margin-block-start: 0.6rem;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+}
+
+.med__doses {
+  margin-block-start: 0.9rem;
+  padding: 0;
+  border: 0;
+}
+
+.med__doses-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  margin-block-end: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.med__count {
+  color: var(--brand);
+}
+
+.dose-list {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.dose {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.dose.is-taken {
+  background: color-mix(in srgb, #2aa568 8%, var(--surface));
+  border-color: color-mix(in srgb, #2aa568 30%, var(--line));
+}
+
+.dose__check {
+  width: 1.4rem;
+  height: 1.4rem;
+  accent-color: #2aa568;
+  cursor: pointer;
+  flex: none;
+}
+
+.dose label {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 2rem;
+  cursor: pointer;
+}
+
+.dose__time {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.dose__state {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #c26a12;
+}
+
+.dose__state.is-taken {
+  color: #1c7a4b;
+}
+
+/* ==========================================================================
+   Ask AI page
+   ========================================================================== */
+
+.ask-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+/* Suggestions sit beside the chat from desktop up; above it on smaller screens. */
+@media (min-width: 60rem) {
+  .ask-layout {
+    grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+  }
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 60vh;
+}
+
+.chat__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding-block-end: 1rem;
+  border-block-end: 1px solid var(--line);
+}
+
+.chat__avatar,
+.chat-msg__avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: var(--brand-soft);
+  border-radius: 9px;
+  color: var(--brand);
+  font-size: 1rem;
+}
+
+.chat__header h2 {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.chat__subtitle {
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
+.chat__log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1rem 0.15rem;
+  margin: 0;
+  list-style: none;
+  overflow-y: auto;
+  flex: 1;
+  max-height: 60vh;
+}
+
+.chat-msg {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 85%;
+}
+
+.chat-msg--assistant {
+  align-self: flex-start;
+}
+
+.chat-msg--user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.chat-msg__bubble {
+  padding: 0.7rem 0.9rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
+}
+
+.chat-msg--assistant .chat-msg__bubble {
+  background: var(--page-bg);
+  border: 1px solid var(--line);
+  border-start-start-radius: 4px;
+}
+
+.chat-msg--user .chat-msg__bubble {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-start-end-radius: 4px;
+}
+
+.chat-msg__text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Structured payloads inside an assistant bubble ------------------------- */
+
+.chat-widget {
+  margin-block-start: 0.6rem;
+}
+
+.chat-widget--list {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.6rem 0.7rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  list-style: none;
+}
+
+.chat-widget__muted {
+  color: var(--ink-muted);
+}
+
+.chat-dot {
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-inline-end: 0.35rem;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.chat-dot--done {
+  background: #2aa568;
+}
+
+.chat-dot--due {
+  background: #c26a12;
+}
+
+/* Sleep chart ------------------------------------------------------------- */
+
+.sleep-chart {
+  margin: 0.6rem 0 0;
+  padding: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.sleep-chart__caption {
+  margin-block-end: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+
+.sleep-chart__plot {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 7rem;
+}
+
+.sleep-chart__col {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.2rem;
+  height: 100%;
+}
+
+.sleep-chart__value {
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.sleep-chart__bar {
+  width: 100%;
+  max-width: 1.6rem;
+  min-height: 4px;
+  background: var(--brand);
+  border-radius: 4px 4px 0 0;
+}
+
+.sleep-chart__bar.is-anomaly {
+  background: #e8933a;
+}
+
+.sleep-chart__label {
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+
+.sleep-chart__flag {
+  color: #c26a12;
+  font-weight: 700;
+}
+
+.sleep-chart__note {
+  margin-block-start: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+}
+
+/* Composer ---------------------------------------------------------------- */
+
+.ask-form {
+  padding-block-start: 0.9rem;
+  border-block-start: 1px solid var(--line);
+}
+
+.ask-form__row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.ask-form__input {
+  flex: 1;
+  min-height: var(--tap);
+  padding: 0.6rem 0.9rem;
+  background: var(--surface);
+  color: inherit;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.ask-form__input[aria-invalid='true'] {
+  border-color: var(--danger);
+  border-width: 2px;
+}
+
+.ask-form__send {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--tap);
+  height: var(--tap);
+  background: var(--brand);
+  color: var(--brand-ink);
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.05rem;
+}
+
+.ask-form__send:hover {
+  filter: brightness(0.94);
+}
+
+/* Suggested questions ----------------------------------------------------- */
+
+.suggestions__heading {
+  margin-block-end: 0.9rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.suggestions__list {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.suggestions__item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0.6rem 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: inherit;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+
+.suggestions__item:hover {
+  background: var(--page-bg);
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.suggestions__icon {
+  color: var(--brand);
+}
+
+/* ==========================================================================
+   App-wide accessibility preferences (driven by Settings → Accessibility)
+   ========================================================================== */
+
+:root[data-text-size='large'] {
+  font-size: 118.75%;
+}
+
+:root[data-contrast='high'] {
+  --line: currentcolor;
+}
+
+:root[data-contrast='high'] .app {
+  --line: #000000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-contrast='high'] .app {
+    --line: #ffffff;
+  }
+}
+
+:root[data-motion='reduced'] *,
+:root[data-motion='reduced'] *::before,
+:root[data-motion='reduced'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ==========================================================================
+   Settings page
+   ========================================================================== */
+
+.settings-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+@media (min-width: 48rem) {
+  .settings-layout {
+    grid-template-columns: 14rem minmax(0, 1fr);
+  }
+}
+
+/* Section nav: horizontal scroll strip on mobile, vertical rail from tablet. */
+.settings-nav {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 0.4rem;
+  overflow-x: auto;
+}
+
+.settings-nav ul {
+  display: flex;
+  gap: 0.2rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+@media (min-width: 48rem) {
+  .settings-nav ul {
+    flex-direction: column;
+  }
+}
+
+.settings-nav__link {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0.55rem 0.85rem;
+  border-radius: 10px;
+  color: var(--ink-muted);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.settings-nav__link:hover {
+  background: var(--page-bg);
+  color: var(--ink);
+}
+
+.settings-nav__link[aria-current='page'] {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.settings-content {
+  min-width: 0;
+}
+
+.section-head {
+  margin-block-end: 1.25rem;
+  padding-block-end: 1rem;
+  border-block-end: 1px solid var(--line);
+}
+
+.section-head h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.section-head p {
+  margin-block-start: 0.3rem;
+  color: var(--ink-muted);
+  font-size: 0.92rem;
+}
+
+/* Toggle rows ------------------------------------------------------------- */
+
+.toggle-list {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-block-end: 1px solid var(--line);
+}
+
+.toggle-row:last-child {
+  border-block-end: 0;
+}
+
+.toggle-row__text {
+  min-width: 0;
+}
+
+.toggle-row__label {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.toggle-row__desc {
+  margin-block-start: 0.15rem;
+  color: var(--ink-muted);
+  font-size: 0.88rem;
+}
+
+/* The switch: a native checkbox restyled, with a 44px-tall hit area. */
+.switch {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex: none;
+  width: 2.9rem;
+  height: 1.65rem;
+  margin: 0;
+  background: var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.switch::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 3px;
+  width: 1.25rem;
+  height: 1.25rem;
+  translate: 0 -50%;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 30%);
+  transition: inset-inline-start var(--transition);
+}
+
+.switch:checked {
+  background: var(--brand);
+}
+
+.switch:checked::after {
+  inset-inline-start: calc(100% - 1.25rem - 3px);
+}
+
+/* Section actions --------------------------------------------------------- */
+
+.section-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-block-start: 1.5rem;
+}
+
+.section-actions__hint {
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
+.section-actions__saved {
+  color: var(--green);
+  font-weight: 700;
+}
+
+/* Care preferences + about ------------------------------------------------ */
+
+.settings-content select,
+.settings-content input[type='time'],
+.settings-content input[type='text'],
+.settings-content input[type='tel'],
+.settings-content input[type='email'] {
+  min-height: var(--tap);
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  background: var(--surface);
+  color: inherit;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.settings-content input[readonly] {
+  background: var(--page-bg);
+  color: var(--ink-muted);
+}
+
+.settings-content input[aria-invalid='true'] {
+  border-color: var(--danger);
+  border-width: 2px;
+}
+
+.care-quiet {
+  margin-block-end: 1rem;
+  padding: 0.75rem 1rem 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.care-quiet legend {
+  padding-inline: 0.35rem;
+  font-weight: 700;
+}
+
+.care-quiet__row {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 30rem) {
+  .care-quiet__row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.about-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.about-row {
+  display: grid;
+  gap: 0.15rem;
+}
+
+@media (min-width: 30rem) {
+  .about-row {
+    grid-template-columns: 8rem 1fr;
+    gap: 1rem;
+  }
+}
+
+.about-row dt {
+  font-weight: 700;
+}
+
+.about-row dd {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.about-note {
+  margin-block-start: 1.25rem;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Mail page — master/detail
+   ========================================================================== */
+
+.mail-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+/* Two panes side by side from tablet up. */
+@media (min-width: 48rem) {
+  .mail-layout {
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+    height: calc(100dvh - 12rem);
+    min-height: 32rem;
+  }
+}
+
+@media (min-width: 75rem) {
+  .mail-layout {
+    grid-template-columns: minmax(0, 23rem) minmax(0, 1fr);
+  }
+}
+
+/* On mobile only one pane shows, chosen by the current route. */
+@media (max-width: 47.99rem) {
+  .mail-layout[data-view='list'] .mail-detail {
+    display: none;
+  }
+
+  .mail-layout[data-view='thread'] .mail-list {
+    display: none;
+  }
+}
+
+.mail-list {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0.75rem;
+}
+
+.mail-list__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0.5rem 0.75rem;
+  border-block-end: 1px solid var(--line);
+}
+
+.mail-list__head h2 {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.mail-list__compose {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--brand);
+  font-size: 1.05rem;
+}
+
+.mail-list__compose:hover {
+  background: var(--page-bg);
+}
+
+.mail-list__items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0 0;
+  margin: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.conv {
+  position: relative;
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.7rem 0.6rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.conv:hover {
+  background: var(--page-bg);
+}
+
+.conv[aria-current='page'] {
+  background: var(--brand-soft);
+}
+
+.conv__avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background: var(--brand);
+  color: var(--brand-ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.conv__body {
+  min-width: 0;
+  flex: 1;
+}
+
+.conv__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.conv__name {
+  font-weight: 700;
+}
+
+.conv__time {
+  flex: none;
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+}
+
+.conv__topic,
+.conv__preview {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conv__topic {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.conv__preview {
+  color: var(--ink-muted);
+  font-size: 0.82rem;
+}
+
+.conv__unread {
+  align-self: center;
+  flex: none;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--brand);
+}
+
+/* Reading pane ------------------------------------------------------------ */
+
+.mail-detail {
+  min-width: 0;
+  height: 100%;
+}
+
+.mail-thread {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 26rem;
+  padding: 0;
+}
+
+.thread-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.15rem;
+  border-block-end: 1px solid var(--line);
+}
+
+.thread-head__back {
+  display: none;
+  align-items: center;
+  min-height: var(--tap);
+  color: var(--brand);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 47.99rem) {
+  .thread-head__back {
+    display: inline-flex;
+  }
+}
+
+.thread-head__title {
+  flex: 1;
+  min-width: 0;
+}
+
+.thread-head__title h2 {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.thread-head__topic {
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
+.thread-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  flex: 1;
+  padding: 1.15rem;
+  margin: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.bubble {
+  max-width: 80%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 14px;
+}
+
+.bubble--them {
+  align-self: flex-start;
+  background: var(--page-bg);
+  border: 1px solid var(--line);
+  border-start-start-radius: 4px;
+}
+
+.bubble--me {
+  align-self: flex-end;
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-start-end-radius: 4px;
+}
+
+.bubble__meta {
+  margin-block-end: 0.2rem;
+  font-size: 0.72rem;
+  opacity: 0.75;
+}
+
+.bubble__text {
+  overflow-wrap: anywhere;
+}
+
+/* Composer ---------------------------------------------------------------- */
+
+.composer {
+  padding: 0.85rem 1.15rem;
+  border-block-start: 1px solid var(--line);
+}
+
+.composer__row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.composer__input {
+  flex: 1;
+  min-height: var(--tap);
+  padding: 0.6rem 0.9rem;
+  background: var(--surface);
+  color: inherit;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.composer__input[aria-invalid='true'] {
+  border-color: var(--danger);
+  border-width: 2px;
+}
+
+.composer__send {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--tap);
+  height: var(--tap);
+  background: var(--brand);
+  color: var(--brand-ink);
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.05rem;
+}
+
+.composer__send:hover {
+  filter: brightness(0.94);
+}
+
+.mail-empty {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  min-height: 12rem;
+  color: var(--ink-muted);
+}
+
+.settings-content textarea,
+.dialog textarea {
+  min-height: 6rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  background: var(--surface);
+  color: inherit;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  resize: vertical;
+  font: inherit;
+}
+
+/* ==========================================================================
+   Reminders page (STML-focused: larger text, big touch targets)
+   ========================================================================== */
+
+.reminders-status {
+  margin-block-end: 1.5rem;
+  padding: 1.15rem 1.35rem;
+  background: var(--brand-soft);
+  border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent);
+  border-radius: 14px;
+}
+
+.reminders-status.is-complete {
+  background: color-mix(in srgb, #2aa568 12%, var(--surface));
+  border-color: color-mix(in srgb, #2aa568 40%, transparent);
+}
+
+.reminders-status__line {
+  font-size: clamp(1.15rem, 1rem + 0.8vw, 1.4rem);
+  font-weight: 700;
+}
+
+.reminders-status__next {
+  margin-block-start: 0.4rem;
+  font-size: 1.05rem;
+}
+
+.reminder-list {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.reminder {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem 1.15rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-inline-start: 6px solid var(--border, var(--line));
+  border-radius: 14px;
+}
+
+.reminder.is-next {
+  border-inline-start-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.reminder.is-done {
+  border-inline-start-color: #2aa568;
+  background: color-mix(in srgb, #2aa568 7%, var(--surface));
+}
+
+/* Big check target — comfortably beyond the 44px minimum for STML users. */
+.reminder__check {
+  width: 2rem;
+  height: 2rem;
+  accent-color: #2aa568;
+  cursor: pointer;
+  flex: none;
+}
+
+.reminder__body {
+  min-width: 0;
+}
+
+.reminder__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: clamp(1.05rem, 0.98rem + 0.4vw, 1.25rem);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reminder__icon {
+  font-size: 1.3em;
+}
+
+.reminder.is-done .reminder__title {
+  color: var(--ink-muted);
+  text-decoration: line-through;
+}
+
+.reminder__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-block-start: 0.3rem;
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+}
+
+.reminder__time {
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.reminder.is-done .reminder__time {
+  color: var(--ink-muted);
+}
+
+.reminder__note {
+  margin-block-start: 0.35rem;
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+}
+
+.reminder__remove {
+  flex: none;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  align-self: start;
+}
+
+/* On the narrowest screens the delete button drops below the text so the
+   title has room, while the check stays beside it. */
+@media (max-width: 26rem) {
+  .reminder {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'check body'
+      '. remove';
+    row-gap: 0.35rem;
+  }
+
+  .reminder__check {
+    grid-area: check;
+  }
+
+  .reminder__body {
+    grid-area: body;
+  }
+
+  .reminder__remove {
+    grid-area: remove;
+    justify-self: start;
+  }
+}
+
+/* ==========================================================================
+   Error / 404 states
+   ========================================================================== */
+
+.error-screen {
+  display: grid;
+  place-items: center;
+  padding: clamp(1.5rem, 6vw, 4rem) 1rem;
+}
+
+/* Standalone variant (runtime error boundary, rendered outside the app shell)
+   brings its own palette and button styling. */
+.error-screen--standalone {
+  --brand: #6350d6;
+  --brand-ink: #ffffff;
+  --line: #dcdae8;
+  --ink: #1b1a2b;
+  --ink-muted: #5c5b70;
+  --surface: #ffffff;
+  --page-bg: #f4f5fa;
+
+  min-height: 100dvh;
+  background: var(--page-bg);
+  color: var(--ink);
+}
+
+@media (prefers-color-scheme: dark) {
+  .error-screen--standalone {
+    --brand: #9d8dff;
+    --brand-ink: #10131f;
+    --line: #395067;
+    --ink: #eef4fb;
+    --ink-muted: #b3c4d8;
+    --surface: #16283c;
+    --page-bg: #0d1b2a;
+  }
+}
+
+.error-state {
+  max-width: 34rem;
+  text-align: center;
+}
+
+.error-state__icon {
+  display: grid;
+  place-items: center;
+  width: 5rem;
+  height: 5rem;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #ffffff;
+  box-shadow: 0 0 0 12px color-mix(in srgb, var(--brand) 16%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  .error-state__icon {
+    color: #10131f;
+  }
+}
+
+.error-state__title {
+  font-size: clamp(1.6rem, 1.3rem + 1.8vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.error-state__message {
+  max-width: 30rem;
+  margin: 0.6rem auto 0;
+  color: var(--ink-muted);
+  font-size: clamp(1rem, 0.95rem + 0.4vw, 1.1rem);
+}
+
+.error-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-block-start: 1.75rem;
+}
+
+.error-state__footer {
+  margin-block-start: 1.25rem;
+}
+
+.error-state__details {
+  margin-block-start: 0.5rem;
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+}
+
+.error-state__details code {
+  overflow-wrap: anywhere;
+}
+
+/* Buttons for the standalone screen (outside the .app scope). */
+.error-screen--standalone .button {
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+
+.error-screen--standalone .button--secondary {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.error-state__actions .button {
+  min-height: 3rem;
+  padding-inline: 1.4rem;
+}
+
+/* "Need help?" — a button that reads as a link. */
+.linklike {
+  min-height: var(--tap);
+  padding: 0.4rem 0.6rem;
+  background: transparent;
+  border: 0;
+  color: var(--brand);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.support-sent p {
+  margin-block-end: 0.5rem;
 }
