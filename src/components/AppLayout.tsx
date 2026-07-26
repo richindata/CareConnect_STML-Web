@@ -20,7 +20,6 @@ export function AppLayout() {
     mainRef.current?.focus()
     window.scrollTo({ top: 0 })
   }, [location.pathname])
-
   return (
     <div className="app">
       <a className="skip-link" href="#main-content">
