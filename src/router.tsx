@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react'
 import { Navigate, createBrowserRouter } from 'react-router-dom'
 import type { RouteObject } from 'react-router-dom'
 import { AppLayout } from './components/AppLayout'
@@ -14,13 +15,8 @@ import { SignInPage } from './pages/SignInPage'
 import { CreateAccountPage } from './pages/CreateAccountPage'
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
 import { DashboardPage } from './pages/DashboardPage'
-import { CareTeamPage } from './pages/CareTeamPage'
 import { MyDayPage } from './pages/MyDayPage'
-import { MedicationsPage } from './pages/MedicationsPage'
-import { AskAiPage } from './pages/AskAiPage'
-import { RemindersPage } from './pages/RemindersPage'
 import { NotFoundPage } from './pages/NotFoundPage'
-import { MailPage, MailIndex, ConversationView } from './pages/MailPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { AccountSection } from './pages/settings/AccountSection'
 import { NotificationsSection } from './pages/settings/NotificationsSection'
@@ -28,6 +24,36 @@ import { PrivacySection } from './pages/settings/PrivacySection'
 import { AccessibilitySection } from './pages/settings/AccessibilitySection'
 import { CarePreferencesSection } from './pages/settings/CarePreferencesSection'
 import { AboutSection } from './pages/settings/AboutSection'
+
+const LazyCareTeamPage = lazy(() =>
+  import('./pages/CareTeamPage').then((module) => ({ default: module.CareTeamPage })),
+)
+const LazyMedicationsPage = lazy(() =>
+  import('./pages/MedicationsPage').then((module) => ({ default: module.MedicationsPage })),
+)
+const LazyRemindersPage = lazy(() =>
+  import('./pages/RemindersPage').then((module) => ({ default: module.RemindersPage })),
+)
+const LazyMailPage = lazy(() =>
+  import('./pages/MailPage').then((module) => ({ default: module.MailPage })),
+)
+const LazyMailIndex = lazy(() =>
+  import('./pages/MailPage').then((module) => ({ default: module.MailIndex })),
+)
+const LazyConversationView = lazy(() =>
+  import('./pages/MailPage').then((module) => ({ default: module.ConversationView })),
+)
+const LazyAskAiPage = lazy(() =>
+  import('./pages/AskAiPage').then((module) => ({ default: module.AskAiPage })),
+)
+
+function withRouteSuspense(node: React.ReactNode) {
+  return (
+    <Suspense fallback={<p className="visually-hidden">Loading section...</p>}>
+      {node}
+    </Suspense>
+  )
+}
 
 /**
  * Signed-out screens render their own centred card. Everything behind
@@ -67,19 +93,22 @@ export const routes: RouteObject[] = [
         ),
         children: [
           { path: '/dashboard', element: <DashboardPage /> },
-          { path: '/care-team', element: <CareTeamPage /> },
+          { path: '/care-team', element: withRouteSuspense(<LazyCareTeamPage />) },
           { path: '/my-day', element: <MyDayPage /> },
-          { path: '/meds', element: <MedicationsPage /> },
-          { path: '/reminders', element: <RemindersPage /> },
+          { path: '/meds', element: withRouteSuspense(<LazyMedicationsPage />) },
+          { path: '/reminders', element: withRouteSuspense(<LazyRemindersPage />) },
           {
             path: '/mail',
-            element: <MailPage />,
+            element: withRouteSuspense(<LazyMailPage />),
             children: [
-              { index: true, element: <MailIndex /> },
-              { path: ':conversationId', element: <ConversationView /> },
+              { index: true, element: withRouteSuspense(<LazyMailIndex />) },
+              {
+                path: ':conversationId',
+                element: withRouteSuspense(<LazyConversationView />),
+              },
             ],
           },
-          { path: '/ai', element: <AskAiPage /> },
+          { path: '/ai', element: withRouteSuspense(<LazyAskAiPage />) },
           {
             path: '/settings',
             element: <SettingsPage />,

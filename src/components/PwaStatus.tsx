@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { useOnlineStatus } from '../hooks/useOnlineStatus'
 import { useAnnouncer } from '../context/AnnouncerProvider'
@@ -14,7 +14,7 @@ interface BeforeInstallPromptEvent extends Event {
  * mode, and installability. Each is an ordinary banner in the document flow so
  * it is reachable by keyboard and announced rather than flashed and lost.
  */
-export function PwaStatus() {
+function PwaStatusComponent() {
   const online = useOnlineStatus()
   const { announce } = useAnnouncer()
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null)
@@ -111,3 +111,10 @@ export function PwaStatus() {
     </>
   )
 }
+
+/**
+ * Memoized because it takes no props and doesn't depend on route — AppLayout
+ * re-renders on every navigation for focus management, and without this that
+ * re-render would cascade here for no reason.
+ */
+export const PwaStatus = memo(PwaStatusComponent)

@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const enablePwaInDev = process.env.VITE_ENABLE_PWA_DEV === 'true'
+
 export default defineConfig({
   // Opens the default browser on the sign-in page when the dev server starts.
   server: { open: '/' },
@@ -56,8 +58,9 @@ export default defineConfig({
         ],
       },
       devOptions: {
-        // Lets you exercise install + offline behaviour with `npm run dev`.
-        enabled: true,
+        // Keep dev-server output clean by default; opt in when explicitly
+        // testing PWA install/offline behavior in development.
+        enabled: enablePwaInDev,
         type: 'module',
         navigateFallback: 'index.html',
       },

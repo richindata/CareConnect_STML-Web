@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { screen, within } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import type { UserEvent } from '@testing-library/user-event'
 import { renderApp } from './renderApp'
 import { setViewportWidth } from './setup'
@@ -48,6 +48,185 @@ describe('routing and guards', () => {
     const { router } = renderApp('/nowhere')
     await screen.findByRole('heading', { level: 1, name: 'CareConnect' })
     expect(router.state.location.pathname).toBe('/')
+  })
+})
+
+describe('keyboard navigation', () => {
+  it('uses a predictable tab order on sign in', async () => {
+    const { user } = renderApp('/')
+
+    const email = await screen.findByLabelText(/email address/i)
+    const password = screen.getByLabelText(/password/i)
+    const submit = screen.getByRole('button', { name: /^sign in$/i })
+    const forgot = screen.getByRole('link', { name: /forgot password/i })
+    const create = screen.getByRole('link', { name: /create account/i })
+
+    await user.tab()
+    expect(email).toHaveFocus()
+    await user.tab()
+    expect(password).toHaveFocus()
+    await user.tab()
+    expect(submit).toHaveFocus()
+    await user.tab()
+    expect(forgot).toHaveFocus()
+    await user.tab()
+    expect(create).toHaveFocus()
+  })
+
+  it('focuses the first missing field when sign in is submitted empty', async () => {
+    const { user } = renderApp('/')
+
+    await user.click(screen.getByRole('button', { name: /^sign in$/i }))
+
+    expect(screen.getByLabelText(/email address/i)).toHaveFocus()
+  })
+
+  it('uses a predictable tab order on create account', async () => {
+    const { user } = renderApp('/create-account')
+
+    const fullName = await screen.findByLabelText(/full name/i)
+    const email = screen.getByLabelText(/email address/i)
+    const caringFor = screen.getByLabelText(/who are you caring for/i)
+    const password = screen.getByLabelText(/^password/i)
+    const confirm = screen.getByLabelText(/confirm password/i)
+    const submit = screen.getByRole('button', { name: /create account/i })
+    const backToSignIn = screen.getByRole('link', { name: /sign in/i })
+
+    await user.tab()
+    expect(fullName).toHaveFocus()
+    await user.tab()
+    expect(email).toHaveFocus()
+    await user.tab()
+    expect(caringFor).toHaveFocus()
+    await user.tab()
+    expect(password).toHaveFocus()
+    await user.tab()
+    expect(confirm).toHaveFocus()
+    await user.tab()
+    expect(submit).toHaveFocus()
+    await user.tab()
+    expect(backToSignIn).toHaveFocus()
+  })
+
+  it('focuses the first missing field when create account is submitted empty', async () => {
+    const { user } = renderApp('/create-account')
+
+    await user.click(screen.getByRole('button', { name: /create account/i }))
+
+    expect(await screen.findByLabelText(/full name/i)).toHaveFocus()
+  })
+
+  it('uses a predictable tab order on forgot password', async () => {
+    const { user } = renderApp('/forgot-password')
+
+    const email = await screen.findByLabelText(/email address/i)
+    const recoveryCode = screen.getByLabelText(/recovery code/i)
+    const password = screen.getByLabelText(/^new password/i)
+    const confirm = screen.getByLabelText(/confirm new password/i)
+    const submit = screen.getByRole('button', { name: /change password/i })
+    const backToSignIn = screen.getByRole('link', { name: /back to sign in/i })
+
+    await user.tab()
+    expect(email).toHaveFocus()
+    await user.tab()
+    expect(recoveryCode).toHaveFocus()
+    await user.tab()
+    expect(password).toHaveFocus()
+    await user.tab()
+    expect(confirm).toHaveFocus()
+    await user.tab()
+    expect(submit).toHaveFocus()
+    await user.tab()
+    expect(backToSignIn).toHaveFocus()
+  })
+
+  it('focuses the first missing field when forgot password is submitted empty', async () => {
+    const { user } = renderApp('/forgot-password')
+
+    await user.click(screen.getByRole('button', { name: /change password/i }))
+
+    expect(await screen.findByLabelText(/email address/i)).toHaveFocus()
+  })
+
+  it('keeps signed-in header navigation in keyboard order', async () => {
+    const setup = renderApp('/create-account')
+    await registerAccount(setup.user)
+    setup.unmount()
+
+    const { user } = renderApp('/')
+    await signIn(user)
+    await screen.findByRole('heading', { level: 1, name: /sarah/i })
+
+    const skip = screen.getByRole('link', { name: /skip to main content/i })
+    const brand = screen.getByRole('link', { name: /^careconnect$/i })
+    const nav = screen.getByRole('navigation', { name: /primary/i })
+    const dashboard = within(nav).getByRole('link', { name: /^dashboard$/i })
+    const myDay = within(nav).getByRole('link', { name: /^my day$/i })
+    const meds = within(nav).getByRole('link', { name: /^medications$/i })
+    const mail = within(nav).getByRole('link', { name: /^mail$/i })
+    const ai = within(nav).getByRole('link', { name: /^ask ai$/i })
+    const settings = within(nav).getByRole('link', { name: /^settings$/i })
+    const account = screen.getByRole('button', { name: /sarah jenkins/i })
+
+    await user.tab()
+    expect(skip).toHaveFocus()
+    await user.tab()
+    expect(brand).toHaveFocus()
+    await user.tab()
+    expect(dashboard).toHaveFocus()
+    await user.tab()
+    expect(myDay).toHaveFocus()
+    await user.tab()
+    expect(meds).toHaveFocus()
+    await user.tab()
+    expect(within(nav).getByRole('link', { name: /^reminders$/i })).toHaveFocus()
+    await user.tab()
+    expect(mail).toHaveFocus()
+    await user.tab()
+    expect(ai).toHaveFocus()
+    await user.tab()
+    expect(settings).toHaveFocus()
+    await user.tab()
+    expect(account).toHaveFocus()
+  })
+
+  it('submits sign in with Enter from the password field', async () => {
+    const setup = renderApp('/create-account')
+    await registerAccount(setup.user)
+    setup.unmount()
+
+    const { user, router } = renderApp('/')
+    await user.type(await screen.findByLabelText(/email address/i), 'sarah@example.com')
+    await user.type(screen.getByLabelText(/password/i), 'correct-horse{Enter}')
+
+    expect(await screen.findByRole('heading', { level: 1, name: /sarah/i })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/dashboard')
+  })
+
+  it('submits create account with Enter from confirm password', async () => {
+    const { user } = renderApp('/create-account')
+
+    await user.type(await screen.findByLabelText(/full name/i), 'Sarah Jenkins')
+    await user.type(screen.getByLabelText(/email address/i), 'sarah@example.com')
+    await user.type(screen.getByLabelText(/who are you caring for/i), 'Eleanor Jenkins')
+    await user.type(screen.getByLabelText(/^password/i), 'correct-horse')
+    await user.type(screen.getByLabelText(/confirm password/i), 'correct-horse{Enter}')
+
+    expect(await screen.findByRole('heading', { name: /your recovery code/i })).toBeInTheDocument()
+  })
+
+  it('submits reset password with Enter from confirm new password', async () => {
+    const setup = renderApp('/create-account')
+    const code = await registerAccount(setup.user)
+    setup.unmount()
+
+    const { user } = renderApp('/forgot-password')
+    await user.type(await screen.findByLabelText(/email address/i), 'sarah@example.com')
+    await user.type(screen.getByLabelText(/recovery code/i), code)
+    await user.type(screen.getByLabelText(/^new password/i), 'brand-new-pass')
+    await user.type(screen.getByLabelText(/confirm new password/i), 'brand-new-pass{Enter}')
+
+    expect(await screen.findByRole('heading', { name: /your new recovery code/i })).toBeInTheDocument()
   })
 })
 
@@ -833,6 +1012,7 @@ describe('settings', () => {
 
     expect(name).toHaveAttribute('aria-invalid', 'true')
     expect(name).toHaveAccessibleDescription(/enter your name/i)
+    expect(name).toHaveFocus()
   })
 
   it('rejects an invalid emergency phone number in care preferences', async () => {
@@ -846,6 +1026,7 @@ describe('settings', () => {
 
     expect(phone).toHaveAttribute('aria-invalid', 'true')
     expect(phone).toHaveAccessibleDescription(/valid phone number/i)
+    expect(phone).toHaveFocus()
   })
 })
 
@@ -1107,9 +1288,11 @@ describe('not found / error', () => {
 
     await user.click(await screen.findByRole('button', { name: /contact support/i }))
     const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByRole('button', { name: /close contact support/i })).toBeInTheDocument()
 
     // Empty email is rejected.
     await user.click(within(dialog).getByRole('button', { name: /send message/i }))
+    expect(within(dialog).getByLabelText(/your email/i)).toHaveAttribute('aria-invalid', 'true')
     expect(within(dialog).getByLabelText(/your email/i)).toHaveAccessibleDescription(
       /enter your email/i,
     )
@@ -1117,6 +1300,7 @@ describe('not found / error', () => {
     // Malformed email is rejected.
     await user.type(within(dialog).getByLabelText(/your email/i), 'not-an-email')
     await user.click(within(dialog).getByRole('button', { name: /send message/i }))
+    expect(within(dialog).getByLabelText(/your email/i)).toHaveAttribute('aria-invalid', 'true')
     expect(within(dialog).getByLabelText(/your email/i)).toHaveAccessibleDescription(
       /does not look like an email/i,
     )
@@ -1126,5 +1310,55 @@ describe('not found / error', () => {
     await user.type(within(dialog).getByLabelText(/your email/i), 'carer@example.com')
     await user.click(within(dialog).getByRole('button', { name: /send message/i }))
     expect(await screen.findByText(/your message is saved on this device/i)).toBeInTheDocument()
+    const liveRegion = document.querySelector('.visually-hidden[role="status"]') as HTMLElement
+    await waitFor(() => {
+      expect(liveRegion).toHaveTextContent(/your message has been saved\./i)
+    })
+  })
+
+  async function openDashboard() {
+    return signedInAt('/dashboard')
+  }
+
+  it('moves focus to main content after route changes within the signed-in shell', async () => {
+    const { user } = await openDashboard()
+
+    await user.click(screen.getByRole('link', { name: /^medications$/i }))
+    await screen.findByRole('heading', { level: 1, name: /medications/i })
+    expect(screen.getByRole('main')).toHaveFocus()
+
+    const breadcrumb = screen.getByRole('navigation', { name: /breadcrumb/i })
+    await user.click(within(breadcrumb).getByRole('link', { name: /^dashboard$/i }))
+    await screen.findByRole('heading', {
+      level: 1,
+      name: /good (morning|afternoon|evening), sarah/i,
+    })
+    expect(screen.getByRole('main')).toHaveFocus()
+  })
+
+  it('closes the account menu with Escape and restores focus to the trigger', async () => {
+    const { user } = await openDashboard()
+
+    const trigger = screen.getByRole('button', { name: /sarah jenkins/i })
+    await user.click(trigger)
+
+    const signOut = screen.getByRole('button', { name: /sign out/i })
+    expect(signOut).toHaveFocus()
+
+    await user.keyboard('{Escape}')
+
+    expect(screen.queryByRole('button', { name: /sign out/i })).not.toBeInTheDocument()
+    expect(trigger).toHaveFocus()
+  })
+
+  it('closes the account menu when clicking outside of it', async () => {
+    const { user } = await openDashboard()
+
+    const trigger = screen.getByRole('button', { name: /sarah jenkins/i })
+    await user.click(trigger)
+    expect(screen.getByRole('button', { name: /sign out/i })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('link', { name: /^mail$/i }))
+    expect(screen.queryByRole('button', { name: /sign out/i })).not.toBeInTheDocument()
   })
 })
