@@ -18,9 +18,11 @@ npm run dev        # http://localhost:5173
 | `npm run dev` | Dev server — opens your browser automatically; service worker enabled so install/offline can be tested |
 | `npm run build` | Type-check, then produce `dist/` with the service worker and manifest |
 | `npm run preview` | Serve the production build — use this for Lighthouse |
-| `npm test` | Run the Vitest suite |
+| `npm test` | Unit/component/hook tests (Vitest, Jest-compatible API) |
+| `npm run test:coverage` | Same suite with coverage; HTML report at `coverage/lcov-report/` |
+| `npm run test:e2e:chrome` | Playwright E2E critical flows in Chromium/Chrome |
 | `npm run lint` | oxlint |
-| `npm run check` | Type-check, lint, test, and build in one go |
+| `npm run check` | Type-check, lint, coverage tests, and build in one go |
 
 ---
 

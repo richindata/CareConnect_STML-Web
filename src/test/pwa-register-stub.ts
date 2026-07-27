@@ -1,11 +1,29 @@
 /**
- * Test double for `virtual:pwa-register/react`. The real module is supplied by
- * vite-plugin-pwa at build time and would try to register a service worker,
- * which jsdom has no implementation for.
+ * Controllable test double for `virtual:pwa-register/react`.
  */
-export function useRegisterSW() {
+import { useState } from 'react'
+
+type RegisterOptions = {
+  onRegisteredSW?: (url: string) => void
+  onRegisterError?: (error: unknown) => void
+}
+
+let initialNeedRefresh = false
+
+export function __setNeedRefresh(value: boolean) {
+  initialNeedRefresh = value
+}
+
+export function __resetPwaStub() {
+  initialNeedRefresh = false
+}
+
+export function useRegisterSW(options: RegisterOptions = {}) {
+  options.onRegisteredSW?.('/sw.js')
+  const [needRefresh, setNeedRefresh] = useState(initialNeedRefresh)
+
   return {
-    needRefresh: [false, () => {}] as [boolean, (value: boolean) => void],
+    needRefresh: [needRefresh, setNeedRefresh] as [boolean, (value: boolean) => void],
     offlineReady: [false, () => {}] as [boolean, (value: boolean) => void],
     updateServiceWorker: async () => {},
   }

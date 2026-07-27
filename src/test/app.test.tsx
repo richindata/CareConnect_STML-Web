@@ -1051,14 +1051,15 @@ describe('mail', () => {
   }
 
   it('opens from the nav and shows the inbox with the first thread on desktop', async () => {
+    setViewportWidth(1440)
     const { router } = await openMail()
 
-    // Wide layout auto-opens the first conversation.
-    expect(router.state.location.pathname).toBe('/mail/c-martinez')
+    // Wide layout auto-opens the first conversation (lazy route — wait for it).
+    expect(await screen.findByRole('heading', { name: 'Dr. Martinez' })).toBeInTheDocument()
+    await waitFor(() => expect(router.state.location.pathname).toBe('/mail/c-martinez'))
     const crumb = screen.getByRole('navigation', { name: /breadcrumb/i })
     expect(within(crumb).getByRole('link', { name: /dashboard/i })).toBeInTheDocument()
 
-    expect(screen.getByRole('heading', { name: 'Dr. Martinez' })).toBeInTheDocument()
     // Scoped to the badge: the role text also appears in the compose recipient list.
     expect(screen.getByText(/primary care physician/i, { selector: '.badge' })).toBeInTheDocument()
     expect(screen.getByText(/reduce metformin from 500mg/i)).toBeInTheDocument()
