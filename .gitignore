@@ -28,3 +28,12 @@ dev-dist
 
 # tool scratch/build cache
 .tmp
+
+# test / coverage output
+coverage
+coverage-run.log
+e2e-run.log
+playwright-report
+test-results
+blob-report
+playwright/.cache
