@@ -35,5 +35,8 @@ test-results
 blob-report
 playwright/.cache
 
+# Vitest coverage output
+coverage
+
 # Manual testing recordings — too large for git, kept local-only
 docs/video/
