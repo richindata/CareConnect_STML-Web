@@ -991,11 +991,11 @@ input[type='text'] {
 }
 
 .team__avatar--specialist {
-  background: #3d8fd6;
+  background: #2b6cb0;
 }
 
 .team__avatar--family {
-  background: #4bbcd6;
+  background: #1a7a94;
 }
 
 .team__name {
@@ -1288,15 +1288,15 @@ input[type='text'] {
 }
 
 .member__avatar--nurse {
-  background: #3d8fd6;
+  background: #2b6cb0;
 }
 
 .member__avatar--family {
-  background: #23b6c9;
+  background: #1a7a94;
 }
 
 .member__avatar--aide {
-  background: #e8933a;
+  background: #a05c1a;
 }
 
 .member__avatar--clinician {
@@ -1324,19 +1324,19 @@ input[type='text'] {
 }
 
 .badge--nurse {
-  --badge-color: #2f77b8;
+  --badge-color: #24629f;
 }
 
 .badge--family {
-  --badge-color: #0f97a8;
+  --badge-color: #0d5f6b;
 }
 
 .badge--aide {
-  --badge-color: #c26a12;
+  --badge-color: #9a5510;
 }
 
 .badge--clinician {
-  --badge-color: #7a6ff0;
+  --badge-color: #5548b8;
 }
 
 .member__contact {
@@ -1449,7 +1449,7 @@ input[type='text'] {
 }
 
 .invite__meta {
-  color: #c26a12;
+  color: #9a5510;
   font-size: 0.85rem;
 }
 
@@ -1646,11 +1646,11 @@ input[type='text'] {
 }
 
 .status-pill--done {
-  --pill-color: #1c7a4b;
+  --pill-color: #146b40;
 }
 
 .status-pill--pending {
-  --pill-color: #c26a12;
+  --pill-color: #9a5510;
 }
 
 /* From ~560px the row fits on a single line with the pill on the right. */
@@ -1843,7 +1843,7 @@ input[type='text'] {
 .dose__state {
   font-size: 0.8rem;
   font-weight: 700;
-  color: #c26a12;
+  color: #9a5510;
 }
 
 .dose__state.is-taken {
@@ -1990,7 +1990,7 @@ input[type='text'] {
 }
 
 .chat-dot--due {
-  background: #c26a12;
+  background: #9a5510;
 }
 
 /* Sleep chart ------------------------------------------------------------- */
@@ -2051,7 +2051,7 @@ input[type='text'] {
 }
 
 .sleep-chart__flag {
-  color: #c26a12;
+  color: #9a5510;
   font-weight: 700;
 }
 
@@ -2690,6 +2690,12 @@ input[type='text'] {
   margin-block-end: 0.2rem;
   font-size: 0.72rem;
   opacity: 0.75;
+}
+
+/* Full opacity on the "me" bubble: white-on-brand text at 0.75 opacity drops
+   below the 4.5:1 contrast minimum once blended with the purple background. */
+.bubble--me .bubble__meta {
+  opacity: 1;
 }
 
 .bubble__text {

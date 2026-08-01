@@ -68,8 +68,11 @@ function PwaStatusComponent() {
     setInstallEvent(null)
   }
 
+  const hasBanner = !online || needRefresh || installEvent !== null
+  if (!hasBanner) return null
+
   return (
-    <>
+    <div className="pwa-status" role="region" aria-label="App status">
       {!online ? (
         <p className="pwa-bar">
           <span aria-hidden="true">📴</span>
@@ -108,7 +111,7 @@ function PwaStatusComponent() {
           </button>
         </div>
       ) : null}
-    </>
+    </div>
   )
 }
 

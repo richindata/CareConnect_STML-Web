@@ -36,6 +36,10 @@ npm run dev        # http://localhost:5173
 
 There is no server and no network call of any kind.
 
+See [docs/architecture.md](docs/architecture.md) for the high-level architecture diagram,
+framework rationale, key technical challenges, and code-reuse approach; see
+[docs/testing-report.md](docs/testing-report.md) for the accessibility/cross-browser validation record.
+
 ---
 
 ## Routing

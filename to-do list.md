@@ -47,14 +47,32 @@
 ## 7) Testing and Validation
 - [x] Add tests for keyboard behavior (Escape close, focus restoration, Enter submit).
 - [x] Add tests for focus movement on route change and validation errors.
-- [ ] Run typecheck, lint, tests, and build after each phase.
-- [ ] Perform manual screen-reader and keyboard-only pass in real browser.
+- [x] Run typecheck, lint, tests, and build after each phase.
+- [x] Perform manual screen-reader and keyboard-only pass in real browser (checklist: `docs/manual-accessibility-testing-checklist.md`, recordings: `docs/video/`).
 
 ## 8) Documentation
 - [ ] Update README to reflect current multi-page auth/dashboard scope.
 - [ ] Document any SEO/indexing decisions and performance targets.
 - [ ] Record accessibility behavior guarantees for future contributors.
 - [x] Generate sample screenshots for each top-level checklist item and store them in `docs/screenshots/`.
+
+## 9) Automated Accessibility & Cross-Browser Testing
+- [x] Run WAVE extension across all routes — 0 errors, 0 contrast errors (`docs/screenshots/WAVE/`).
+- [x] Run axe DevTools across all routes — 0 automatic issues (`docs/screenshots/Axe Dev/`).
+- [x] Run Lighthouse — Performance/Accessibility/Best Practices/SEO all 100 (`docs/perf/rescan.report.html`).
+- [x] Scripted axe-core regression suite across Chromium/Firefox/WebKit/Edge, all routes + dialogs (`e2e/a11y.spec.ts`) — 0 violations.
+- [x] Fix all contrast/landmark violations found (`src/index.css`, `src/components/PwaStatus.tsx`).
+- [x] Cross-browser smoke test across Chromium/Firefox/WebKit/Edge (`e2e/cross-browser.spec.ts`) — 0 console errors, all routes render.
+- [x] Document browser-specific findings (WebKit/Safari default Tab-order behavior — not an app bug).
+- [x] Scripted semantic HTML / ARIA / focus-trap (modals + dropdowns) verification across Chromium/Firefox/WebKit/Edge (`e2e/semantic-aria-focus.spec.ts`) — 60/60 passed.
+- [x] Perform and record the manual keyboard + screen-reader video pass (`docs/manual-accessibility-testing-checklist.md`) — no issues found.
+- [x] Consolidate results into a single validation record (`docs/testing-report.md`).
+
+## 10) Architecture & Technical Documentation
+- [x] High-level architecture diagram (`docs/architecture.md`, Section 1).
+- [x] Document framework choices and rationale (`docs/architecture.md`, Section 2).
+- [x] Document key technical challenges and solutions (`docs/architecture.md`, Section 3).
+- [x] Document code reuse across platforms/features (`docs/architecture.md`, Section 4).
 
 ## Suggested Execution Order
 1. Accessibility behavior fixes + tests.
